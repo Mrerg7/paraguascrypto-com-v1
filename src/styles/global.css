@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --indigo: #6366f1;
+    --indigo-dark: #4f46e5;
+    --indigo-light: #818cf8;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-zinc-950 text-zinc-200 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .section-header {
+    @apply text-[3.25rem] leading-[1.05] font-bold tracking-[-0.04em];
+  }
+
+  .indigo-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .indigo-glow {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  }
+
+  .nav-scrolled {
+    background-color: rgba(9, 9, 11, 0.95);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-link {
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: #818cf8;
+  }
+
+  .hero-bg {
+    background-image: linear-gradient(rgba(9, 9, 11, 0.65), rgba(9, 9, 11, 0.88)), url('https://imagedelivery.net/-sPAUAWeA405NiWJ0SNIQA/d9f4fb75-6f2a-4b10-c4b2-edbb1f696800/public');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  .reason-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reason-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+    border-color: rgba(99, 102, 241, 0.5);
+  }
+
+  .use-case-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .use-case-card:hover {
+    transform: translateY(-4px);
+    border-color: #6366f1;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+  }
+
+  .stat-number {
+    font-variant-numeric: tabular-nums;
+  }
+}
