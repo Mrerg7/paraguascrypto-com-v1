@@ -1,0 +1,92 @@
+---
+import { getEntry } from 'astro:content';
+import Footer from '../../components/Footer.astro';
+import InquiryForm from '../../components/InquiryForm.astro';
+import Nav from '../../components/Nav.astro';
+import { SITE } from '../../consts';
+import { FAQS_ES } from '../../data/faq';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbNode, faqNode, graph, productNode, webPageNode, websiteNode } from '../../lib/schema';
+
+const siteEntry = await getEntry('site', 'default');
+if (!siteEntry) throw new Error('Site config missing');
+
+const title = 'Paraguascrypto.com en venta — Paraguas Cripto | $27,500';
+const description =
+  'paraguascrypto.com está en venta. Paraguas significa umbrella, no el país Paraguay. Precio de salida 27.500 USD. Transferencia con Escrow.com. Ideal para seguros, custodia y marcas paraguas en cripto.';
+
+const jsonLd = graph([
+  websiteNode(),
+  productNode(),
+  webPageNode({ path: '/es/', title, description, lang: 'es' }),
+  breadcrumbNode([
+    { name: 'Inicio', path: '/es/' },
+  ]),
+  faqNode(FAQS_ES),
+]);
+---
+
+<BaseLayout title={title} description={description} lang="es" jsonLd={jsonLd}>
+  <Nav lang="es" />
+  <main>
+    <header class="hero-bg px-4 pb-14 pt-24 sm:px-6 sm:pb-20 sm:pt-32">
+      <div class="mx-auto max-w-3xl">
+        <p class="text-xs font-bold uppercase tracking-[2px] text-emerald-400">Dominio .com en venta</p>
+        <h1 class="hero-title font-display mt-4 font-extrabold">
+          <span class="indigo-gradient">Paraguascrypto</span><br />
+          <span class="text-[0.62em] text-white">.com</span>
+        </h1>
+        <p class="mt-4 text-2xl font-semibold text-white sm:text-3xl">El paraguas cripto</p>
+        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-300">
+          Paraguas es la palabra en español para umbrella: protección y cobertura. No es Paraguay.
+          El precio de salida es <strong class="text-white">{SITE.askingPriceLabel} USD</strong>.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="#consultar" class="inline-flex min-h-12 items-center justify-center rounded-3xl bg-white px-6 py-3 font-semibold text-zinc-950 no-underline">
+            Enviar oferta
+          </a>
+          <a href="/" class="inline-flex min-h-12 items-center justify-center rounded-3xl border border-white/30 px-6 py-3 font-semibold text-white no-underline" hrefLang="en">
+            Read in English
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <section id="significado" class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+      <h2 class="section-header">Qué está comprando</h2>
+      <div class="mt-6 space-y-4 text-lg leading-relaxed text-zinc-300">
+        <p>El dominio dice, sin explicación larga, que la marca cubre. Sirve para seguros cripto, custodia, gestión de riesgo, o una empresa con varios productos bajo un mismo nombre.</p>
+        <p>Se pronuncia pa-RA-guas CRI-pto. En inglés, el equipo debe decir de una vez que no es el país. En español, la palabra ya se entiende.</p>
+        <p>La venta es solo el nombre: push del dominio y control de DNS. No incluye una app, un token ni una garantía de marca. Revise marcas en su clase antes de cerrar.</p>
+      </div>
+      <div id="precio" class="mt-8 rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+        <div class="text-xs uppercase tracking-[2px] text-zinc-500">Precio de salida</div>
+        <div class="mt-1 font-display text-5xl font-extrabold text-white">{SITE.askingPriceLabel}</div>
+        <p class="mt-2 text-sm text-zinc-400">USD, pago único. Cierre por Escrow.com. Se leen ofertas serias por debajo del precio si traen uso y plazo.</p>
+      </div>
+    </section>
+
+    <section class="border-y border-zinc-800 bg-zinc-900 py-14">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6">
+        <h2 class="text-2xl font-semibold text-white">Preguntas</h2>
+        <div class="mt-6 divide-y divide-zinc-800">
+          {FAQS_ES.map((faq) => (
+            <details class="py-4">
+              <summary class="cursor-pointer text-lg font-semibold text-white">{faq.question}</summary>
+              <p class="mt-2 leading-relaxed text-zinc-400">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="consultar" class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+      <h2 class="section-header">Consultar la compra</h2>
+      <p class="mb-6 mt-3 text-zinc-400">El mensaje se abre en su correo, dirigido a {SITE.acquisitionEmail}.</p>
+      <div class="rounded-3xl border border-zinc-700 bg-zinc-950 p-5 sm:p-8">
+        <InquiryForm lang="es" id="consulta-es" />
+      </div>
+    </section>
+  </main>
+  <Footer disclaimer={siteEntry.data.disclaimer} lang="es" />
+</BaseLayout>

@@ -1,28 +1,28 @@
 ---
-import { ACQUISITION_MAILTO, SITE } from '../consts';
+import { ACQUISITION_MAILTO } from '../consts';
+import Icon from './Icon.astro';
 
 interface Props {
   label: string;
   variant?: 'accent' | 'outline' | 'white';
   class?: string;
-  icon?: string;
+  icon?: 'arrow-right' | 'arrow-right-long' | 'envelope' | 'shield';
+  href?: string;
 }
 
-const { label, variant = 'accent', class: className = '', icon } = Astro.props;
+const { label, variant = 'accent', class: className = '', icon, href = ACQUISITION_MAILTO } = Astro.props;
 
-const baseClasses = 'inline-flex items-center justify-center gap-x-3 px-9 py-4 font-semibold text-lg rounded-3xl transition-all group no-underline';
+const baseClasses =
+  'inline-flex min-h-12 items-center justify-center gap-x-3 rounded-3xl px-7 py-3.5 text-base font-semibold transition-all no-underline sm:text-lg';
 
 const variantClasses: Record<string, string> = {
-  accent: 'indigo-glow hover:brightness-110 active:brightness-95 text-white shadow-xl shadow-indigo-500/25 w-full sm:w-auto',
-  outline: 'border border-white/30 hover:bg-white/5 active:bg-white/10 text-white w-full sm:w-auto',
-  white: 'bg-white text-zinc-950 hover:bg-indigo-50 active:bg-white shadow-xl w-full sm:w-auto',
+  accent: 'indigo-glow text-white shadow-xl shadow-indigo-500/25 hover:brightness-110 w-full sm:w-auto',
+  outline: 'border border-white/30 text-white hover:bg-white/5 w-full sm:w-auto',
+  white: 'bg-white text-zinc-950 shadow-xl hover:bg-indigo-50 w-full sm:w-auto',
 };
 ---
 
-<a
-  href={ACQUISITION_MAILTO}
-  class={`${baseClasses} ${variantClasses[variant] || variantClasses.accent} ${className}`}
->
+<a href={href} class={`${baseClasses} ${variantClasses[variant] || variantClasses.accent} ${className}`}>
   <span>{label}</span>
-  {icon && <i class={`fa-solid ${icon} group-active:scale-95 transition-transform`}></i>}
+  {icon && <Icon name={icon} class="h-4 w-4" />}
 </a>

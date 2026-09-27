@@ -1,0 +1,219 @@
+---
+import { SITE } from '../consts';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang?: 'en' | 'es';
+  id?: string;
+}
+
+const { lang = 'en', id = 'inquiry-form' } = Astro.props;
+const es = lang === 'es';
+
+const copy = es
+  ? {
+      name: 'Nombre',
+      email: 'Correo',
+      company: 'Empresa',
+      companyPh: 'Opcional',
+      use: 'Uso previsto',
+      offer: 'Oferta (USD)',
+      message: 'Mensaje',
+      messagePh: 'Plazo, estructura y cualquier condición.',
+      send: 'Enviar consulta',
+      note: 'Abre su app de correo hacia sales@desertrich.com. Este sitio no guarda los datos.',
+      uses: [
+        'Seguro o riesgo cripto',
+        'Custodia y seguridad',
+        'Marca paraguas / holding',
+        'Plataforma todo-en-uno',
+        'Inversión en el dominio',
+        'Otro',
+      ],
+      success: 'Si el correo no se abrió, copie el mensaje y envíelo a',
+      copy: 'Copiar mensaje',
+      copied: 'Copiado',
+    }
+  : {
+      name: 'Name',
+      email: 'Email',
+      company: 'Company',
+      companyPh: 'Optional',
+      use: 'Intended use',
+      offer: 'Offer (USD)',
+      message: 'Message',
+      messagePh: 'Timeline, structure, and any conditions.',
+      send: 'Send acquisition inquiry',
+      note: 'Opens your email app to sales@desertrich.com. This site does not store what you type.',
+      uses: [
+        'Crypto insurance or risk',
+        'Custody and security',
+        'Umbrella brand / holding company',
+        'All-in-one platform',
+        'Domain investment',
+        'Other',
+      ],
+      success: 'If your email app did not open, copy this message and send it to',
+      copy: 'Copy message',
+      copied: 'Copied',
+    };
+---
+
+<form id={id} class="inquiry-form space-y-4" data-inquiry data-lang={lang} novalidate>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="mb-1.5 block font-medium text-zinc-300">{copy.name}</span>
+      <input
+        name="name"
+        type="text"
+        required
+        autocomplete="name"
+        class="w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3.5 text-base text-white outline-none ring-indigo-400/40 placeholder:text-zinc-600 focus:border-indigo-400 focus:ring-2"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="mb-1.5 block font-medium text-zinc-300">{copy.email}</span>
+      <input
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        inputmode="email"
+        class="w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3.5 text-base text-white outline-none ring-indigo-400/40 placeholder:text-zinc-600 focus:border-indigo-400 focus:ring-2"
+      />
+    </label>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="mb-1.5 block font-medium text-zinc-300">{copy.company}</span>
+      <input
+        name="company"
+        type="text"
+        autocomplete="organization"
+        placeholder={copy.companyPh}
+        class="w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3.5 text-base text-white outline-none ring-indigo-400/40 placeholder:text-zinc-600 focus:border-indigo-400 focus:ring-2"
+      />
+    </label>
+    <label class="block text-sm">
+      <span class="mb-1.5 block font-medium text-zinc-300">{copy.offer}</span>
+      <input
+        name="offer"
+        type="text"
+        inputmode="decimal"
+        placeholder={String(SITE.askingPrice)}
+        class="w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3.5 text-base text-white outline-none ring-indigo-400/40 placeholder:text-zinc-600 focus:border-indigo-400 focus:ring-2"
+      />
+    </label>
+  </div>
+
+  <label class="block text-sm">
+    <span class="mb-1.5 block font-medium text-zinc-300">{copy.use}</span>
+    <select
+      name="use"
+      class="w-full appearance-none rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3.5 text-base text-white outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/40"
+    >
+      {copy.uses.map((use) => <option value={use}>{use}</option>)}
+    </select>
+  </label>
+
+  <label class="block text-sm">
+    <span class="mb-1.5 block font-medium text-zinc-300">{copy.message}</span>
+    <textarea
+      name="message"
+      rows="4"
+      placeholder={copy.messagePh}
+      class="w-full resize-y rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3.5 text-base text-white outline-none ring-indigo-400/40 placeholder:text-zinc-600 focus:border-indigo-400 focus:ring-2"
+    ></textarea>
+  </label>
+
+  <label class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+    Company website
+    <input name="company_website" type="text" tabindex="-1" autocomplete="off" />
+  </label>
+
+  <button
+    type="submit"
+    class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-3xl px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-500/25 indigo-glow hover:brightness-110"
+  >
+    <span>{copy.send}</span>
+    <Icon name="arrow-right" class="h-4 w-4" />
+  </button>
+  <p class="text-xs leading-relaxed text-zinc-500">{copy.note}</p>
+
+  <div class="inquiry-result scroll-mb-28 hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4" hidden>
+    <p class="text-sm text-emerald-200">
+      {copy.success}
+      <a class="font-semibold text-white underline" href={`mailto:${SITE.acquisitionEmail}`}>{SITE.acquisitionEmail}</a>.
+    </p>
+    <pre class="inquiry-body mt-3 max-h-48 overflow-auto whitespace-pre-wrap rounded-xl bg-zinc-950 p-3 text-xs text-zinc-300"></pre>
+    <button type="button" class="inquiry-copy mt-3 text-sm font-semibold text-indigo-300" data-copy={copy.copy} data-copied={copy.copied}>
+      {copy.copy}
+    </button>
+  </div>
+</form>
+
+<script>
+  import { SITE } from '../consts';
+
+  const subject = `${SITE.name} — Domain Acquisition Inquiry`;
+
+  function buildBody(form: HTMLFormElement) {
+    const data = new FormData(form);
+    const lines = [
+      'Hello,',
+      '',
+      `I want to acquire ${SITE.name}.`,
+      `Asking price stated on the site: ${SITE.askingPriceLabel} USD.`,
+      '',
+      `Name: ${data.get('name') || ''}`,
+      `Email: ${data.get('email') || ''}`,
+      `Company: ${data.get('company') || ''}`,
+      `Offer (USD): ${data.get('offer') || ''}`,
+      `Intended use: ${data.get('use') || ''}`,
+      '',
+      String(data.get('message') || '').trim(),
+    ];
+    return lines.join('\n').trim();
+  }
+
+  document.querySelectorAll<HTMLFormElement>('form[data-inquiry]').forEach((form) => {
+    if (form.dataset.bound === '1') return;
+    form.dataset.bound = '1';
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const honeypot = String(new FormData(form).get('company_website') || '').trim();
+      if (honeypot) return;
+
+      const body = buildBody(form);
+      const result = form.querySelector<HTMLElement>('.inquiry-result');
+      const pre = form.querySelector('.inquiry-body');
+      if (pre) pre.textContent = body;
+      if (result) {
+        result.hidden = false;
+        result.classList.remove('hidden');
+        result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      const href = `mailto:${SITE.acquisitionEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = href;
+    });
+
+    form.querySelector('.inquiry-copy')?.addEventListener('click', async (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      const text = form.querySelector('.inquiry-body')?.textContent || '';
+      try {
+        await navigator.clipboard.writeText(`To: ${SITE.acquisitionEmail}\nSubject: ${subject}\n\n${text}`);
+        const copied = button.dataset.copied || 'Copied';
+        button.textContent = copied;
+        window.setTimeout(() => {
+          button.textContent = button.dataset.copy || 'Copy message';
+        }, 1800);
+      } catch {
+        button.textContent = SITE.acquisitionEmail;
+      }
+    });
+  });
+</script>

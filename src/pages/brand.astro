@@ -1,0 +1,103 @@
+---
+import { getEntry } from 'astro:content';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import { SITE } from '../consts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { breadcrumbNode, graph, productNode, webPageNode, websiteNode } from '../lib/schema';
+
+const siteEntry = await getEntry('site', 'default');
+if (!siteEntry) throw new Error('Site config missing');
+
+const title = 'What paraguascrypto.com means — umbrella, not Paraguay';
+const description =
+  'Paraguas is Spanish for umbrella. paraguascrypto.com means Crypto Umbrella: pronunciation, the Paraguay mix-up, and who the .com fits. For sale at $27,500.';
+
+const jsonLd = graph([
+  websiteNode(),
+  productNode(),
+  webPageNode({ path: '/brand/', title, description, lang: 'en-US' }),
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'The brand', path: '/brand/' },
+  ]),
+]);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <Nav />
+  <main class="mx-auto max-w-3xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28">
+    <nav class="mb-6 text-sm text-zinc-500" aria-label="Breadcrumb">
+      <a href="/" class="no-underline hover:text-white">Home</a>
+      <span class="px-2">/</span>
+      <span class="text-zinc-300">The brand</span>
+    </nav>
+
+    <p class="text-xs font-bold uppercase tracking-[2px] text-indigo-400">Naming notes</p>
+    <h1 class="section-header mt-3">Paraguas means umbrella. <span class="indigo-gradient">Not Paraguay.</span></h1>
+    <p class="mt-5 text-lg leading-relaxed text-zinc-300">
+      paraguascrypto.com is a premium .com for sale at {SITE.askingPriceLabel}. The value is the metaphor: a crypto brand that covers, shelters, and holds more than one product. These notes are for the buyer who has to brief a team, a lawyer, and a designer in the same week.
+    </p>
+
+    <article class="mt-10 space-y-10 text-base leading-relaxed text-zinc-300">
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-white">The word</h2>
+        <p class="mt-3">
+          <strong class="text-white">Paraguas</strong> is everyday Spanish for umbrella. Historically it is “para” (for / against) plus “aguas” (waters): a cover against the rain, the Spanish cousin of French <em>parapluie</em>. English speakers do not need the etymology. They need the picture. An umbrella is protection you can explain to a customer in one frame.
+        </p>
+        <p class="mt-3">
+          Pronunciation for an English-speaking team: <strong class="text-white">pah-RAH-gwahs</strong>, then <strong class="text-white">KRYP-toh</strong>. Stress the second syllable of paraguas. In Spanish it is pa-RA-guas CRI-pto.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-white">The mix-up you should expect</h2>
+        <p class="mt-3">
+          People will hear Paraguay. The country and the umbrella share a look on the page and almost nothing else. Paraguay is the nation. Paraguas is the object. The domain spells the object: p-a-r-a-g-u-a-s, then crypto.
+        </p>
+        <p class="mt-3">
+          That confusion is a briefing item, not a hidden defect. A good brand says it once on the homepage — “umbrella, not the country” — and then spends its media on coverage, custody, or insurance. Spanish-speaking users already know the word. They do not need the footnote. English-speaking users do.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-white">Why the .com is the asset</h2>
+        <p class="mt-3">
+          Crypto brands lose years to a name that could be a ticker, a Discord, or a token. A .com that already contains the category metaphor skips that argument. It is long enough to be specific and short enough to say on a stage. It is not a hyphenated phrase and it does not depend on a new TLD the buyer’s customers do not type.
+        </p>
+        <p class="mt-3">
+          Spanish is the practical second market. More than 500 million people use the language. “Paraguas” does not need translation there. A security, insurance, or multi-product crypto company talking to Latin America and Spain gets a head start that a coined English word does not.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-white">Where the name fits</h2>
+        <ul class="mt-3 list-disc space-y-2 pl-5">
+          <li>On-chain insurance, smart-contract coverage, or a risk desk.</li>
+          <li>Custody, recovery, or institutional security that has to feel careful.</li>
+          <li>A holding company or super-app with several products under one roof.</li>
+          <li>Portfolio tools that hedge, rebalance, or sit above single-chain apps.</li>
+        </ul>
+        <p class="mt-3">
+          It is a weaker fit for a meme coin, a single-chain casino, or anything that wants to sound reckless. The word umbrella fights that tone. Buy the name if you want the fight to go the other way.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold tracking-tight text-white">What you are not buying</h2>
+        <p class="mt-3">
+          The sale is the domain. There is no app, no token, no customer file, and no promise that a trademark office will clear the word in your class. “Paraguas” is a common noun. Clearance is the buyer’s work, before escrow is funded. Transfer is a registrar push after Escrow.com, or another escrow service both sides accept.
+        </p>
+      </section>
+    </article>
+
+    <div class="mt-12 rounded-3xl border border-indigo-500/30 bg-indigo-500/10 p-6 sm:p-8">
+      <h2 class="text-2xl font-semibold text-white">Asking price {SITE.askingPriceLabel}</h2>
+      <p class="mt-2 text-zinc-300">If the name matches the company you are actually building, start the inquiry. Offers should name a number, a use, and a timeline.</p>
+      <a href="/acquire/" class="mt-5 inline-flex min-h-12 items-center justify-center rounded-3xl px-6 py-3 font-semibold text-white no-underline indigo-glow">
+        Go to the offer form
+      </a>
+    </div>
+  </main>
+  <Footer disclaimer={siteEntry.data.disclaimer} />
+</BaseLayout>

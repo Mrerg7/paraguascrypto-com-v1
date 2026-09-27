@@ -2,327 +2,244 @@
 import { getCollection, getEntry } from 'astro:content';
 import AcquisitionCTA from '../components/AcquisitionCTA.astro';
 import Footer from '../components/Footer.astro';
+import Icon from '../components/Icon.astro';
 import Nav from '../components/Nav.astro';
 import { SITE } from '../consts';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { graph, organizationNode, productNode, webPageNode, websiteNode } from '../lib/schema';
 
 const siteEntry = await getEntry('site', 'default');
 if (!siteEntry) throw new Error('Site config missing');
 const siteConfig = siteEntry.data;
 
-const reasons = (await getCollection('reasons')).sort(
-  (a, b) => a.data.number - b.data.number,
-);
+const reasons = (await getCollection('reasons')).sort((a, b) => a.data.number - b.data.number);
+
+const jsonLd = graph([
+  websiteNode(),
+  organizationNode(),
+  productNode(),
+  webPageNode({
+    path: '/',
+    title: SITE.title,
+    description: SITE.description,
+    lang: 'en-US',
+  }),
+]);
+
+const steps = [
+  { n: '1', title: 'Inquire', body: 'Name, email, and your offer. A reply comes from sales@desertrich.com.' },
+  { n: '2', title: 'Escrow', body: 'Terms lock on Escrow.com, or another escrow desk both sides accept.' },
+  { n: '3', title: 'Transfer', body: 'Domain push and DNS control after funds clear. Usually a few business days.' },
+];
 ---
 
-<BaseLayout>
+<BaseLayout jsonLd={jsonLd} preloadHero>
   <Nav />
 
   <main>
-    <!-- HERO -->
-    <header class="hero-bg min-h-[100dvh] flex items-center pt-16 relative">
-      <div class="max-w-screen-xl mx-auto px-6 pt-12 pb-20">
+    <header class="hero-bg relative flex items-center pt-20 sm:min-h-[100dvh] sm:pt-16">
+      <div class="mx-auto max-w-screen-xl px-4 pb-16 pt-8 sm:px-6 sm:pb-20 sm:pt-12">
         <div class="max-w-5xl">
-          <!-- Badge -->
-          <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 mb-8">
-            <div class="flex items-center gap-x-1.5">
-              <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span class="text-emerald-400 text-xs font-semibold tracking-[1.5px] uppercase">Premium .com • Available Now</span>
-            </div>
+          <div class="mb-6 inline-flex items-center gap-x-2 rounded-3xl border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-md sm:mb-8 sm:px-4">
+            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-[1.4px] text-emerald-400 sm:text-xs">Premium .com for sale · Available now</span>
           </div>
 
-          <div class="max-w-4xl">
-            <h1 class="font-display text-[4rem] md:text-[5.5rem] leading-[0.95] tracking-[-4px] font-extrabold mb-2">
-              <span class="indigo-gradient">Paraguascrypto</span><br />
-              <span class="text-5xl md:text-6xl text-white tracking-tight">.com</span>
-            </h1>
+          <h1 class="hero-title font-display max-w-4xl font-extrabold">
+            <span class="indigo-gradient">Paraguascrypto</span><br />
+            <span class="text-[0.62em] tracking-tight text-white">.com</span>
+          </h1>
 
-            <p class="text-3xl md:text-4xl text-white font-display font-semibold tracking-tight mt-2 mb-3">
-              Crypto Umbrella
-            </p>
+          <p class="mt-3 font-display text-2xl font-semibold tracking-tight text-white sm:text-4xl">
+            Crypto Umbrella
+          </p>
 
-            <p class="max-w-2xl text-xl md:text-2xl text-zinc-400 font-light tracking-tight leading-tight mb-10">
-              The premium domain that offers protection, unity, and comprehensive coverage — sheltering the next generation of digital asset platforms under one trusted roof.
-            </p>
-          </div>
+          <p class="mb-8 mt-3 max-w-2xl text-base font-light leading-snug tracking-tight text-zinc-300 sm:text-2xl">
+            The .com that means protection, coverage, and one roof over a crypto brand. Asking price
+            <strong class="font-semibold text-white">{SITE.askingPriceLabel}</strong>.
+          </p>
 
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <AcquisitionCTA label="Secure This Domain" variant="white" icon="fa-arrow-right-long" />
-            <a href="#opportunity" class="px-8 py-4 border border-white/30 hover:bg-white/5 active:bg-white/10 transition-all font-semibold text-lg rounded-3xl flex items-center justify-center gap-x-2 w-full sm:w-auto text-white no-underline">
-              <span>Explore the Opportunity</span>
+          <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <AcquisitionCTA label="Acquire for $27,500" variant="white" icon="arrow-right-long" href="/acquire/" />
+            <a href="#meaning" class="inline-flex min-h-12 items-center justify-center rounded-3xl border border-white/30 px-7 py-3.5 text-base font-semibold text-white no-underline transition hover:bg-white/5">
+              Why this name
             </a>
           </div>
 
-          <div class="mt-10 flex items-center gap-x-8 text-sm">
-            <div class="flex items-center gap-x-2 text-zinc-400">
-              <i class="fa-solid fa-check text-emerald-400"></i>
-              <span>Protection & Coverage</span>
-            </div>
-            <div class="flex items-center gap-x-2 text-zinc-400">
-              <i class="fa-solid fa-check text-emerald-400"></i>
-              <span>Unified Brand Power</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scroll indicator -->
-      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 hidden lg:block">
-        <div class="flex flex-col items-center text-xs tracking-[2px] text-zinc-500">
-          <span>SCROLL TO EXPLORE</span>
-          <i class="fa-solid fa-chevron-down mt-1.5 animate-bounce"></i>
+          <ul class="mt-8 flex flex-col gap-2 text-sm text-zinc-400 sm:flex-row sm:gap-8">
+            <li class="flex items-center gap-x-2">
+              <Icon name="check" class="h-4 w-4 text-emerald-400" />
+              <span>Paraguas = umbrella, not Paraguay</span>
+            </li>
+            <li class="flex items-center gap-x-2">
+              <Icon name="check" class="h-4 w-4 text-emerald-400" />
+              <span>Escrow.com transfer</span>
+            </li>
+          </ul>
         </div>
       </div>
     </header>
 
-    <!-- TRUST BAR -->
-    <div class="border-b border-zinc-800 bg-zinc-900/60 py-5">
-      <div class="max-w-screen-xl mx-auto px-6">
-        <div class="flex flex-wrap justify-center md:justify-between items-center gap-x-8 gap-y-3 text-sm">
-          {
-            siteConfig.trustPoints.map((point) => (
-              <div class="flex items-center gap-x-2 text-zinc-400">
-                <i class="fa-solid fa-circle-check text-indigo-400"></i>
-                <span class="font-medium">{point}</span>
-              </div>
-            ))
-          }
-        </div>
+    <div class="border-b border-zinc-800 bg-zinc-900/60 py-4">
+      <div class="mx-auto max-w-screen-xl px-4 sm:px-6">
+        <ul class="flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:justify-between sm:gap-x-6 sm:gap-y-3">
+          {siteConfig.trustPoints.map((point) => (
+            <li class="flex items-center gap-x-2 text-zinc-400">
+              <Icon name="circle-check" class="h-4 w-4 shrink-0 text-indigo-400" />
+              <span class="font-medium">{point}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
 
-    <!-- THE MEANING -->
-    <section id="meaning" class="max-w-screen-xl mx-auto px-6 pt-20 pb-16">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-14">
-          <div class="inline-block px-4 py-1 rounded-3xl bg-indigo-400/10 text-indigo-400 text-xs font-bold tracking-[2px] mb-4">THE NAME</div>
-          <h2 class="section-header tracking-[-2.5px]">Paraguascrypto means<br /><span class="indigo-gradient">Crypto Umbrella</span></h2>
-          <p class="mt-4 text-xl text-zinc-400">Protection. Coverage. Unity. The name that shelters and unifies in the complex world of digital assets.</p>
+    <section id="meaning" class="mx-auto max-w-screen-xl px-4 pb-16 pt-16 sm:px-6 sm:pt-20">
+      <div class="mx-auto max-w-4xl">
+        <div class="mb-10 text-center sm:mb-14">
+          <div class="mb-4 inline-block rounded-3xl bg-indigo-400/10 px-4 py-1 text-xs font-bold tracking-[2px] text-indigo-400">THE NAME</div>
+          <h2 class="section-header">Paraguascrypto means <span class="indigo-gradient">Crypto Umbrella</span></h2>
+          <p class="mt-4 text-lg text-zinc-400">Protection. Coverage. One brand. <a class="text-indigo-300 underline decoration-indigo-400/40 underline-offset-4" href="/brand/">Read the brand notes</a>, including pronunciation and the Paraguay mix-up.</p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-10 items-center">
+        <div class="grid items-start gap-8 md:grid-cols-2 md:gap-10">
           <div>
-            <div class="prose prose-invert prose-lg max-w-none text-zinc-300 space-y-4">
-              <p class="leading-relaxed">"Paraguas" is the Spanish word for <strong class="text-white">umbrella</strong> — a universal symbol of protection, shelter, and comprehensive coverage understood across the Spanish-speaking world and beyond.</p>
-              <p class="leading-relaxed">Combined with "Crypto", it creates a powerful and versatile brand name that communicates:</p>
+            <div class="space-y-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
+              <p>"Paraguas" is the Spanish word for <strong class="text-white">umbrella</strong> — shelter and full coverage, understood across the Spanish-speaking world.</p>
+              <p>It is not a misspelling of Paraguay. The name is paraguas + crypto: a brand that says safety without borrowing a country.</p>
             </div>
-
-            <ul class="mt-6 space-y-4 text-lg">
+            <ul class="mt-6 space-y-4 text-base sm:text-lg">
               <li class="flex items-start gap-x-3">
-                <i class="fa-solid fa-check-circle text-indigo-400 mt-1.5 flex-shrink-0"></i>
-                <span><strong>Protection & Security</strong> — In a volatile market, users and projects need an umbrella of safety</span>
+                <Icon name="circle-check" class="mt-1 h-4 w-4 shrink-0 text-indigo-400" />
+                <span><strong>Protection</strong> — a signal buyers and users already understand</span>
               </li>
               <li class="flex items-start gap-x-3">
-                <i class="fa-solid fa-check-circle text-indigo-400 mt-1.5 flex-shrink-0"></i>
-                <span><strong>Comprehensive Coverage</strong> — One brand that covers multiple needs, products, or chains</span>
+                <Icon name="circle-check" class="mt-1 h-4 w-4 shrink-0 text-indigo-400" />
+                <span><strong>Coverage</strong> — one name over several products, chains, or policies</span>
               </li>
               <li class="flex items-start gap-x-3">
-                <i class="fa-solid fa-check-circle text-indigo-400 mt-1.5 flex-shrink-0"></i>
-                <span><strong>Unity & Integration</strong> — Bringing disparate elements together under one trusted roof</span>
-              </li>
-              <li class="flex items-start gap-x-3">
-                <i class="fa-solid fa-check-circle text-indigo-400 mt-1.5 flex-shrink-0"></i>
-                <span><strong>Trust & Reliability</strong> — An umbrella implies stability and care in uncertain conditions</span>
+                <Icon name="circle-check" class="mt-1 h-4 w-4 shrink-0 text-indigo-400" />
+                <span><strong>Reach</strong> — clear in English as a symbol, immediate in Spanish as a word</span>
               </li>
             </ul>
           </div>
 
-          <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-10">
-            <div class="text-sm uppercase tracking-[2px] text-zinc-500 mb-4">VERSATILE BRAND POSITIONING</div>
-            <div class="space-y-6 text-lg">
-              <div>
-                <div class="font-mono text-xs text-indigo-400 tracking-widest mb-1">SPANISH + UNIVERSAL SYMBOL</div>
-                <div class="text-3xl font-semibold tracking-tight">Paraguas = Umbrella</div>
-              </div>
-              <div class="pt-4 border-t border-zinc-700">
-                <div class="text-zinc-400">In crypto, where volatility, complexity, and risk are constant, the most valuable brands are those that offer users and builders a sense of protection and comprehensive coverage.</div>
-              </div>
-            </div>
+          <div class="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 sm:p-10">
+            <div class="mb-4 text-xs uppercase tracking-[2px] text-zinc-500">Say it once</div>
+            <div class="font-mono text-xs tracking-widest text-indigo-400">pah-RAH-gwahs · KRYP-toh</div>
+            <div class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Paraguas = umbrella</div>
+            <p class="mt-4 border-t border-zinc-700 pt-4 text-zinc-400">
+              In a market built on volatility, the brands that win sound like shelter. This .com already says that in two languages.
+            </p>
+            <a href="/es/" class="mt-6 inline-flex text-sm font-semibold text-indigo-300 no-underline hover:text-white" hrefLang="es">Leer en español →</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- THE OPPORTUNITY -->
-    <section id="opportunity" class="bg-zinc-900 border-y border-zinc-800 py-20">
-      <div class="max-w-screen-xl mx-auto px-6">
-        <div class="max-w-4xl mx-auto">
-          <div class="text-center mb-12">
-            <div class="inline-block px-4 py-1 rounded-3xl bg-indigo-400/10 text-indigo-400 text-xs font-bold tracking-[2px] mb-4">THE CRYPTO LANDSCAPE</div>
-            <h2 class="section-header tracking-[-2.5px]">In crypto, everyone<br />needs an <span class="indigo-gradient">umbrella</span>.</h2>
+    <section id="opportunity" class="border-y border-zinc-800 bg-zinc-900 py-16 sm:py-20">
+      <div class="mx-auto max-w-screen-xl px-4 sm:px-6">
+        <div class="mx-auto max-w-4xl">
+          <div class="mb-8 text-center sm:mb-12">
+            <div class="mb-4 inline-block rounded-3xl bg-indigo-400/10 px-4 py-1 text-xs font-bold tracking-[2px] text-indigo-400">THE MARKET</div>
+            <h2 class="section-header">In crypto, everyone needs an <span class="indigo-gradient">umbrella</span>.</h2>
           </div>
-
-          <div class="prose prose-invert prose-lg max-w-none text-zinc-300 space-y-5">
-            <p class="text-xl leading-relaxed">With the advent of cryptocurrency, individuals and organizations gained unprecedented power to create wealth from anywhere in the world. But with that power came new risks, complexity, and fragmentation.</p>
-
-            <p>Users juggle multiple wallets, chains, protocols, and assets. Projects must navigate security threats, regulatory uncertainty, and market volatility. Institutions demand robust protection and unified solutions.</p>
-
-            <p>The brands that will win in this environment are those that provide <strong class="text-white">shelter</strong> — comprehensive platforms, security layers, risk management tools, and unifying ecosystems that make crypto safer, simpler, and more accessible for everyone.</p>
+          <div class="space-y-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
+            <p>Users hold wallets, chains, and protocols that do not talk to each other. Projects carry security risk, regulatory fog, and drawdowns. Institutions ask for one counterparty that covers the stack.</p>
+            <p>The names that get remembered are the ones that promise <strong class="text-white">shelter</strong> — insurance, custody, hedging, or a multi-product roof. Paraguascrypto.com is that sentence, already registered as a .com.</p>
           </div>
-
-          <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="reason-card bg-zinc-950 border border-zinc-800 rounded-2xl p-6 text-center">
-              <div class="text-4xl font-semibold text-white tracking-tighter">Risk</div>
-              <div class="text-sm text-zinc-400 mt-1">Management</div>
-            </div>
-            <div class="reason-card bg-zinc-950 border border-zinc-800 rounded-2xl p-6 text-center">
-              <div class="text-4xl font-semibold text-white tracking-tighter">Security</div>
-              <div class="text-sm text-zinc-400 mt-1">First Priority</div>
-            </div>
-            <div class="reason-card bg-zinc-950 border border-zinc-800 rounded-2xl p-6 text-center">
-              <div class="text-4xl font-semibold text-white tracking-tighter">Unity</div>
-              <div class="text-sm text-zinc-400 mt-1">Across Chains</div>
-            </div>
-            <div class="reason-card bg-zinc-950 border border-zinc-800 rounded-2xl p-6 text-center">
-              <div class="text-4xl font-semibold text-white tracking-tighter">Trust</div>
-              <div class="text-sm text-zinc-400 mt-1">Built Over Time</div>
-            </div>
+          <div class="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+            {[
+              ['Risk', 'Management'],
+              ['Security', 'First'],
+              ['Unity', 'Across chains'],
+              ['Trust', 'Over time'],
+            ].map(([title, sub]) => (
+              <div class="rounded-2xl border border-zinc-800 bg-zinc-950 p-4 text-center sm:p-6">
+                <div class="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{title}</div>
+                <div class="mt-1 text-sm text-zinc-400">{sub}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </section>
 
-    <!-- WHY PREMIUM -->
-    <section id="why-premium" class="max-w-screen-xl mx-auto px-6 pt-20 pb-16">
-      <div class="max-w-3xl mx-auto text-center mb-14">
-        <div class="inline-block px-4 py-1 rounded-3xl bg-indigo-400/10 text-indigo-400 text-xs font-bold tracking-[2px] mb-4">PREMIUM STRATEGIC ASSET</div>
-        <h2 class="section-header tracking-[-2.5px]">Why Paraguascrypto.com<br />commands a <span class="indigo-gradient">high acquisition price</span></h2>
-        <p class="mt-5 text-xl text-zinc-400">This is a rare, memorable, and highly ownable name that instantly communicates protection, coverage, and comprehensive solutions in one of the highest-growth sectors of the 21st century.</p>
+    <section id="why-premium" class="mx-auto max-w-screen-xl px-4 pb-16 pt-16 sm:px-6 sm:pt-20">
+      <div class="mx-auto mb-10 max-w-3xl text-center sm:mb-14">
+        <div class="mb-4 inline-block rounded-3xl bg-indigo-400/10 px-4 py-1 text-xs font-bold tracking-[2px] text-indigo-400">WHY THIS PRICE</div>
+        <h2 class="section-header">Why buyers pay for a name that already <span class="indigo-gradient">means the category</span></h2>
+        <p class="mt-5 text-lg text-zinc-400">Asking price {SITE.askingPriceLabel}. The .com is ownable, sayable, and specific. You are not buying a syllable. You are buying the metaphor.</p>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {
-          reasons.map((reason) => (
-            <div class="reason-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col">
-              <div class="w-12 h-12 flex items-center justify-center rounded-2xl indigo-glow bg-opacity-10 mb-6">
-                <span class="text-2xl font-extrabold font-display text-white">{String(reason.data.number).padStart(2, '0')}</span>
-              </div>
-              <h3 class="font-semibold text-xl tracking-tight mb-3">{reason.data.title}</h3>
-              <p class="text-zinc-400 leading-relaxed flex-grow">{reason.data.description}</p>
+      <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {reasons.map((reason) => (
+          <article class="reason-card flex flex-col rounded-3xl border border-zinc-800 bg-zinc-900 p-6 sm:p-8">
+            <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl font-display text-lg font-extrabold text-white indigo-glow">
+              {String(reason.data.number).padStart(2, '0')}
             </div>
-          ))
-        }
-      </div>
-
-      <div class="max-w-3xl mx-auto mt-12 text-center text-sm text-zinc-500 border-t border-zinc-800 pt-8">
-        In a market where clear, emotionally resonant, and strategically versatile .com domains command significant premiums, Paraguascrypto.com stands out as a rare and ownable asset with immediate brand power and long-term flexibility.
+            <h3 class="mb-3 text-xl font-semibold tracking-tight">{reason.data.title}</h3>
+            <p class="flex-grow leading-relaxed text-zinc-400">{reason.data.description}</p>
+          </article>
+        ))}
       </div>
     </section>
 
-    <!-- USE CASES -->
-    <section id="use-cases" class="bg-zinc-900 border-y border-zinc-800 py-20">
-      <div class="max-w-screen-xl mx-auto px-6">
-        <div class="max-w-3xl mx-auto text-center mb-14">
-          <div class="inline-block px-4 py-1 rounded-3xl bg-indigo-400/10 text-indigo-400 text-xs font-bold tracking-[2px] mb-4">BUILT FOR PROTECTION & SCALE</div>
-          <h2 class="section-header tracking-[-2.5px]">Perfect for platforms that<br />cover and protect</h2>
-          <p class="mt-3 text-xl text-zinc-400">This name gives you instant positioning as the comprehensive, trustworthy solution users and projects can rely on.</p>
+    <section id="use-cases" class="border-y border-zinc-800 bg-zinc-900 py-16 sm:py-20">
+      <div class="mx-auto max-w-screen-xl px-4 sm:px-6">
+        <div class="mx-auto mb-10 max-w-3xl text-center sm:mb-14">
+          <div class="mb-4 inline-block rounded-3xl bg-indigo-400/10 px-4 py-1 text-xs font-bold tracking-[2px] text-indigo-400">WHO IT FITS</div>
+          <h2 class="section-header">Built for platforms that cover and protect</h2>
+          <p class="mt-3 text-lg text-zinc-400">Use it as the public name the day the transfer lands. No product ships with the domain — the brand does.</p>
         </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {
-            siteConfig.useCaseCategories.map((useCase, i) => (
-              <div class="use-case-card bg-zinc-950 border border-zinc-800 hover:border-indigo-400/60 rounded-3xl p-8 flex flex-col">
-                <div class="flex items-center gap-x-4 mb-5">
-                  <div class="w-11 h-11 rounded-2xl indigo-glow flex items-center justify-center flex-shrink-0">
-                    <span class="text-white font-bold text-lg">{i + 1}</span>
-                  </div>
-                  <div>
-                    <div class="font-semibold text-lg tracking-tight">{useCase.title}</div>
-                  </div>
-                </div>
-                <p class="text-zinc-400 flex-grow text-[15px] leading-relaxed">{useCase.description}</p>
+        <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {siteConfig.useCaseCategories.map((useCase, i) => (
+            <article class="use-case-card flex flex-col rounded-3xl border border-zinc-800 bg-zinc-950 p-6 sm:p-8">
+              <div class="mb-4 flex items-center gap-x-3">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl font-bold text-white indigo-glow">{i + 1}</div>
+                <h3 class="text-lg font-semibold tracking-tight">{useCase.title}</h3>
               </div>
-            ))
-          }
+              <p class="text-[15px] leading-relaxed text-zinc-400">{useCase.description}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- THIS IS MORE THAN A DOMAIN -->
-    <section class="max-w-screen-xl mx-auto px-6 py-20">
-      <div class="max-w-4xl mx-auto text-center">
-        <div class="mx-auto mb-8 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10">
-          <i class="fa-solid fa-umbrella text-4xl indigo-gradient"></i>
+    <section class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-4xl text-center">
+        <div class="mx-auto mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5 text-indigo-300">
+          <Icon name="umbrella" class="h-8 w-8" />
         </div>
-
-        <h2 class="font-display text-5xl md:text-6xl tracking-[-2.5px] leading-none font-extrabold mb-6">
-          This Is More Than a Domain —<br />
-          <span class="indigo-gradient">It's the Umbrella Your Crypto Brand Needs</span>
-        </h2>
-
-        <div class="prose prose-invert prose-lg max-w-2xl mx-auto text-zinc-300 space-y-4">
-          <p>
-            In a digital landscape crowded with generic names and forgettable handles, <strong class="text-white">paraguascrypto.com</strong> stands apart. It is the name that positions its owner as the trusted shelter in an industry defined by volatility — protective, comprehensive, and globally resonant.
-          </p>
-          <p>
-            Whether you are the founder building the next category-defining security platform, the entrepreneur launching a multi-product ecosystem, or the investor who recognizes long-term brand equity in a name that owns the narrative of protection and coverage, this domain is ready to serve as the cornerstone.
-          </p>
-        </div>
+        <h2 class="section-header">More than a domain. <span class="indigo-gradient">The umbrella the brand is missing.</span></h2>
+        <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">
+          Generic crypto names are leased attention. <strong class="text-white">paraguascrypto.com</strong> is a position: the shelter in a volatile category, readable in Spanish, ownable in English, and listed at a price a serious acquirer can underwrite today.
+        </p>
       </div>
     </section>
 
-    <!-- ACQUISITION SECTION -->
-    <section class="bg-zinc-900 border-y border-zinc-800 py-16">
-      <div class="max-w-screen-xl mx-auto px-6">
-        <div class="max-w-4xl mx-auto">
-          <div class="text-center mb-10">
-            <div class="inline-block px-5 py-1.5 rounded-3xl indigo-glow text-white text-xs font-extrabold tracking-[1.5px] mb-4">ACQUISITION</div>
-            <h2 class="section-header tracking-[-2px]">Ready to own<br />the Crypto Umbrella?</h2>
+    <section id="how" class="border-y border-zinc-800 bg-zinc-900 py-16 sm:py-20">
+      <div class="mx-auto max-w-screen-xl px-4 sm:px-6">
+        <div class="mx-auto max-w-4xl">
+          <div class="mb-8 text-center">
+            <div class="mb-4 inline-block rounded-3xl px-4 py-1 text-xs font-extrabold tracking-[1.5px] text-white indigo-glow">HOW TO BUY</div>
+            <h2 class="section-header">Three steps. Then the name is yours.</h2>
           </div>
-
-          <div class="bg-zinc-950 border border-zinc-700 rounded-3xl p-10 md:p-14">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-y-8">
-              <div>
-                <div class="text-sm uppercase tracking-[3px] text-indigo-400 font-bold mb-2">Premium Strategic Asset</div>
-                <div class="flex items-baseline gap-x-2">
-                  <span class="text-5xl font-extrabold tabular-nums tracking-[-2px]">Price on Request</span>
-                </div>
-                <div class="text-sm text-zinc-400 mt-1">One-time acquisition • Full ownership transfer</div>
-
-                <div class="mt-6 text-sm max-w-xs">
-                  <div class="flex items-center gap-x-2 text-emerald-400">
-                    <i class="fa-solid fa-check"></i>
-                    <span class="font-medium">Paraguascrypto.com is available for private acquisition by teams building protective, comprehensive, or unifying solutions in crypto</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="lg:text-right">
-                <AcquisitionCTA label="Submit Acquisition Inquiry" variant="accent" icon="fa-arrow-right-long" />
-                <div class="mt-4 text-xs text-zinc-400">Serious buyers only • Escrow protected</div>
-              </div>
-            </div>
-
-            <div class="mt-10 pt-8 border-t border-zinc-700 grid grid-cols-1 sm:grid-cols-3 gap-y-6 text-sm">
-              <div>
-                <div class="font-semibold mb-1 flex items-center gap-x-2"><i class="fa-solid fa-handshake text-indigo-400"></i> <span>Transaction</span></div>
-                <div class="text-zinc-400">Handled via Escrow.com or your preferred platform. Full domain push + DNS control transfer.</div>
-              </div>
-              <div>
-                <div class="font-semibold mb-1 flex items-center gap-x-2"><i class="fa-solid fa-file-contract text-indigo-400"></i> <span>Confidential</span></div>
-                <div class="text-zinc-400">All inquiries are handled confidentially. Pricing reflects the name's strong emotional resonance, versatility as an umbrella brand, cross-cultural appeal, and immediate ability to communicate protection.</div>
-              </div>
-              <div>
-                <div class="font-semibold mb-1 flex items-center gap-x-2"><i class="fa-solid fa-globe text-indigo-400"></i> <span>Why Now?</span></div>
-                <div class="text-zinc-400">The brands that claim clear, ownable language around protection and comprehensive coverage in crypto now will hold mindshare for decades.</div>
-              </div>
-            </div>
+          <ol class="grid gap-4 md:grid-cols-3">
+            {steps.map((step) => (
+              <li class="rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
+                <div class="font-display text-3xl font-bold text-indigo-300">{step.n}</div>
+                <h3 class="mt-2 text-lg font-semibold">{step.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-zinc-400">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+          <div class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <AcquisitionCTA label={`Start at ${SITE.askingPriceLabel}`} variant="accent" icon="arrow-right" href="/acquire/" />
+            <a href="/faq/" class="inline-flex min-h-12 items-center justify-center rounded-3xl border border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-300 no-underline hover:text-white">Read the buyer FAQ</a>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- FINAL CTA -->
-    <div class="bg-gradient-to-b from-zinc-900 to-zinc-950 py-16">
-      <div class="max-w-screen-xl mx-auto px-6 text-center">
-        <div class="max-w-lg mx-auto">
-          <h3 class="font-display text-5xl tracking-[-2px] font-extrabold mb-4">Protection has<br />a new name.</h3>
-          <p class="text-xl text-zinc-300 mb-8">Claim the premium domain that defines the era of comprehensive crypto coverage.</p>
-
-          <AcquisitionCTA label="Inquire to Acquire" variant="accent" />
-        </div>
-      </div>
-    </div>
   </main>
 
   <Footer disclaimer={siteConfig.disclaimer} />

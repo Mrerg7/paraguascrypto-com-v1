@@ -4,66 +4,72 @@ import AcquisitionCTA from './AcquisitionCTA.astro';
 
 interface Props {
   disclaimer: string;
+  lang?: 'en' | 'es';
 }
 
-const { disclaimer } = Astro.props;
+const { disclaimer, lang = 'en' } = Astro.props;
 const year = new Date().getFullYear();
+const es = lang === 'es';
 ---
 
 <footer id="acquire" class="border-t border-white/10 bg-zinc-950">
-  <div class="mx-auto max-w-screen-xl px-6 py-20">
-    <!-- Sophisticated CTA Card -->
-    <div class="relative overflow-hidden rounded-[2rem] border border-indigo-500/25 bg-gradient-to-br from-zinc-950 via-indigo-950/20 to-black p-10 md:p-14">
+  <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 sm:py-20">
+    <div class="relative overflow-hidden rounded-[2rem] border border-indigo-500/25 bg-gradient-to-br from-zinc-950 via-indigo-950/20 to-black p-6 sm:p-10 md:p-14">
       <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/15 blur-3xl" aria-hidden="true"></div>
-      <div class="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl" aria-hidden="true"></div>
-
-      <div class="relative grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+      <div class="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div>
           <p class="mb-3 text-xs font-black uppercase tracking-[3px] text-indigo-400">
-            Domain acquisition
+            {es ? 'Adquisición' : 'Domain acquisition'}
           </p>
-          <h2 class="font-display text-4xl tracking-tight md:text-5xl text-white">
-            {SITE.name} is available<br />for acquisition
+          <h2 class="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
+            {SITE.name} {es ? 'está en venta' : 'is for sale'}
           </h2>
-          <p class="mt-5 max-w-xl text-lg text-zinc-400">
-            Serious buyers and strategic acquirers: connect directly for confidential terms,
-            transfer logistics, and flexible closing options. One premium asset. One point of contact.
+          <p class="mt-5 max-w-xl text-base text-zinc-400 sm:text-lg">
+            {es
+              ? `Precio de salida ${SITE.askingPriceLabel} USD. Transferencia con Escrow.com. Un activo, un contacto.`
+              : `Asking price ${SITE.askingPriceLabel} USD. Escrow.com transfer. One asset. One point of contact.`}
           </p>
           <p class="mt-6 font-mono text-sm text-indigo-300">
-            <a href={ACQUISITION_MAILTO} class="hover:text-white transition-colors no-underline">
+            <a href={ACQUISITION_MAILTO} class="no-underline transition-colors hover:text-white">
               {SITE.acquisitionEmail}
             </a>
           </p>
         </div>
 
-        <div class="flex flex-col gap-4 sm:flex-row lg:flex-col xl:flex-row">
-          <AcquisitionCTA label="Request acquisition terms" variant="accent" class="w-full" icon="fa-envelope" />
+        <div class="flex flex-col gap-3">
+          <AcquisitionCTA
+            label={es ? 'Enviar consulta' : 'Submit an inquiry'}
+            variant="accent"
+            class="w-full"
+            icon="envelope"
+            href={es ? '/es/#consultar' : '/acquire/'}
+          />
           <a
-            href={ACQUISITION_MAILTO}
-            class="inline-flex w-full items-center justify-center gap-2 rounded-3xl border border-white/20 px-8 py-4 text-sm font-semibold text-zinc-300 transition hover:border-white/50 hover:text-white no-underline"
+            href="/faq/"
+            class="inline-flex min-h-12 w-full items-center justify-center rounded-3xl border border-white/20 px-6 py-3 text-sm font-semibold text-zinc-300 no-underline transition hover:border-white/50 hover:text-white"
           >
-            <i class="fas fa-shield-halved text-emerald-400" aria-hidden="true"></i>
-            Escrow-ready • Direct response
+            {es ? 'Preguntas de compradores' : 'Buyer questions'}
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Disclaimer -->
     <p class="mx-auto mt-12 max-w-4xl text-center text-xs leading-relaxed text-zinc-500">
       {disclaimer}
     </p>
 
-    <!-- Footer Bottom -->
-    <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-zinc-500 md:flex-row">
-      <div>&copy; {year} {SITE.name} — Premium Domain Asset</div>
-      <div class="flex gap-x-6">
-        <a href="/" class="hover:text-zinc-300 no-underline">Home</a>
-        <a href={ACQUISITION_MAILTO} class="hover:text-zinc-300 no-underline">Contact for Acquisition</a>
-      </div>
-      <div class="text-[10px] uppercase tracking-wider text-zinc-600">
-        Demonstration &amp; informational • Updated {SITE.updated}
-      </div>
+    <nav class="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-zinc-400" aria-label="Footer">
+      <a href="/" class="no-underline hover:text-white">Home</a>
+      <a href="/acquire/" class="no-underline hover:text-white">{es ? 'Comprar' : 'Acquire'}</a>
+      <a href="/brand/" class="no-underline hover:text-white">{es ? 'La marca' : 'The brand'}</a>
+      <a href="/faq/" class="no-underline hover:text-white">FAQ</a>
+      <a href="/es/" class="no-underline hover:text-white" hrefLang="es">Español</a>
+      <a href={ACQUISITION_MAILTO} class="no-underline hover:text-white">{SITE.acquisitionEmail}</a>
+    </nav>
+
+    <div class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-zinc-500 md:flex-row">
+      <div>&copy; {year} {SITE.name} — {es ? 'Dominio premium en venta' : 'Premium domain for sale'}</div>
+      <div class="uppercase tracking-wider text-zinc-600">Updated {SITE.updated}</div>
     </div>
   </div>
 </footer>

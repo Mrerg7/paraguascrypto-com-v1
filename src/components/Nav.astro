@@ -1,89 +1,124 @@
 ---
-import { ACQUISITION_MAILTO } from '../consts';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang?: 'en' | 'es';
+}
+
+const { lang = 'en' } = Astro.props;
+const es = lang === 'es';
+
+const links = es
+  ? [
+      { href: '/es/#significado', label: 'El nombre' },
+      { href: '/es/#precio', label: 'Precio' },
+      { href: '/faq/', label: 'FAQ' },
+      { href: '/acquire/', label: 'Comprar' },
+    ]
+  : [
+      { href: '/#meaning', label: 'The Name' },
+      { href: '/#why-premium', label: 'Why Premium' },
+      { href: '/faq/', label: 'FAQ' },
+      { href: '/brand/', label: 'The Brand' },
+    ];
 ---
 
-<nav id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-zinc-800">
+<nav id="nav" class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800 transition-all duration-300">
   <div class="max-w-screen-xl mx-auto">
-    <div class="px-6 py-5 flex items-center justify-between">
-      <!-- Logo -->
-      <a href="/" class="flex items-center gap-x-3 no-underline">
-        <div class="w-9 h-9 indigo-glow rounded-2xl flex items-center justify-center shadow-inner">
-          <i class="fa-solid fa-umbrella text-white text-lg"></i>
+    <div class="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+      <a href={es ? '/es/' : '/'} class="flex min-w-0 items-center gap-x-2.5 no-underline">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl text-white indigo-glow">
+          <Icon name="umbrella" class="h-5 w-5" />
         </div>
-        <div>
-          <span class="font-display text-2xl font-semibold tracking-tighter indigo-gradient">Paraguascrypto</span>
-          <span class="text-xs font-mono text-zinc-500 align-super ml-0.5">.com</span>
+        <div class="min-w-0">
+          <span class="font-display text-lg font-semibold tracking-tight indigo-gradient sm:text-2xl">Paraguascrypto</span>
+          <span class="ml-0.5 align-super font-mono text-[10px] text-zinc-500 sm:text-xs">.com</span>
         </div>
       </a>
 
-      <!-- Desktop Nav -->
-      <div class="hidden md:flex items-center gap-x-9 text-sm font-medium">
-        <a href="#meaning" class="nav-link text-zinc-300 hover:text-white no-underline">The Name</a>
-        <a href="#opportunity" class="nav-link text-zinc-300 hover:text-white no-underline">The Opportunity</a>
-        <a href="#why-premium" class="nav-link text-zinc-300 hover:text-white no-underline">Why Premium</a>
-        <a href="#use-cases" class="nav-link text-zinc-300 hover:text-white no-underline">Perfect For</a>
+      <div class="hidden items-center gap-x-7 text-sm font-medium lg:flex">
+        {links.map((link) => (
+          <a href={link.href} class="nav-link text-zinc-300 no-underline hover:text-white">{link.label}</a>
+        ))}
       </div>
 
-      <!-- CTA Buttons -->
-      <div class="flex items-center gap-x-3">
-        <a href="#acquire"
-           class="hidden sm:inline-block px-5 py-2.5 text-sm font-semibold rounded-3xl border border-zinc-700 hover:bg-zinc-900 transition-colors text-zinc-300 no-underline">
-          Acquisition
+      <div class="flex items-center gap-x-2">
+        <a
+          href={es ? '/es/#consultar' : '/acquire/'}
+          class="hidden min-h-11 items-center rounded-3xl px-4 py-2.5 text-sm font-semibold text-white no-underline indigo-glow sm:inline-flex"
+        >
+          {es ? 'Consultar' : 'Inquire'}
         </a>
-        <a href={ACQUISITION_MAILTO}
-           class="px-6 py-2.5 indigo-glow hover:brightness-110 active:brightness-95 transition-all text-white text-sm font-semibold rounded-3xl flex items-center gap-x-2 shadow-lg shadow-indigo-500/25 no-underline">
-          <span>Inquire Now</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
+        <a
+          href={es ? '/' : '/es/'}
+          class="hidden min-h-11 items-center rounded-3xl border border-zinc-700 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-300 no-underline hover:text-white sm:inline-flex"
+          hrefLang={es ? 'en' : 'es'}
+        >
+          {es ? 'EN' : 'ES'}
         </a>
-
-        <!-- Mobile Menu Button -->
-        <button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-white bg-transparent border-0 cursor-pointer" aria-label="Menu">
-          <i class="fa-solid fa-bars text-xl"></i>
+        <button
+          id="mobile-menu-btn"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border-0 bg-transparent text-zinc-300 lg:hidden"
+          aria-label={es ? 'Abrir menú' : 'Open menu'}
+          aria-expanded="false"
+        >
+          <Icon name="bars" class="h-5 w-5" />
         </button>
       </div>
     </div>
   </div>
 </nav>
 
-<script>
+<script define:vars={{ links, es }}>
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 30) {
-      nav.classList.add('nav-scrolled', 'shadow-xl');
-    } else {
-      nav.classList.remove('nav-scrolled', 'shadow-xl');
-    }
+    if (!nav) return;
+    nav.classList.toggle('nav-scrolled', window.scrollY > 30);
+    nav.classList.toggle('shadow-xl', window.scrollY > 30);
   });
 
   const mobileBtn = document.getElementById('mobile-menu-btn');
   if (mobileBtn) {
     mobileBtn.addEventListener('click', () => {
-      const navLinks = document.createElement('div');
-      navLinks.className = 'fixed inset-0 bg-zinc-950/95 z-[90] flex flex-col p-8 pt-20 text-xl';
-      navLinks.innerHTML = `
-        <button class="absolute top-6 right-8 text-3xl text-zinc-400 bg-transparent border-0 cursor-pointer">&times;</button>
-        <a href="#meaning" class="py-4 border-b border-zinc-800 text-zinc-200 no-underline">The Name</a>
-        <a href="#opportunity" class="py-4 border-b border-zinc-800 text-zinc-200 no-underline">The Opportunity</a>
-        <a href="#why-premium" class="py-4 border-b border-zinc-800 text-zinc-200 no-underline">Why Premium</a>
-        <a href="#use-cases" class="py-4 border-b border-zinc-800 text-zinc-200 no-underline">Perfect For</a>
-        <div class="pt-8">
-          <a href="${document.querySelector('a[href^="mailto:"]')?.getAttribute('href') || '#'}"
-             class="block w-full py-4 indigo-glow text-white rounded-3xl font-semibold text-center no-underline">
-            Inquire to Acquire
-          </a>
+      const existing = document.getElementById('mobile-sheet');
+      if (existing) {
+        existing.remove();
+        mobileBtn.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      const sheet = document.createElement('div');
+      sheet.id = 'mobile-sheet';
+      sheet.className = 'fixed inset-0 z-[90] flex flex-col bg-zinc-950/98 px-6 pb-28 pt-6 text-xl';
+      const items = links
+        .map(
+          (link) =>
+            `<a href="${link.href}" class="border-b border-zinc-800 py-4 text-zinc-100 no-underline">${link.label}</a>`,
+        )
+        .join('');
+      const langHref = es ? '/' : '/es/';
+      const langLabel = es ? 'English' : 'Español';
+      const ctaHref = es ? '/es/#consultar' : '/acquire/';
+      const ctaLabel = es ? 'Consultar ahora' : 'Inquire to acquire';
+      sheet.innerHTML = `
+        <div class="mb-6 flex items-center justify-between">
+          <span class="text-sm uppercase tracking-[0.2em] text-zinc-500">Menu</span>
+          <button type="button" class="close-sheet h-11 w-11 text-3xl leading-none text-zinc-300" aria-label="Close">&times;</button>
         </div>
+        ${items}
+        <a href="${langHref}" class="border-b border-zinc-800 py-4 text-zinc-100 no-underline">${langLabel}</a>
+        <a href="${ctaHref}" class="mt-8 block rounded-3xl py-4 text-center font-semibold text-white no-underline indigo-glow">${ctaLabel}</a>
       `;
-      document.body.appendChild(navLinks);
-
-      navLinks.querySelector('button')!.addEventListener('click', () => {
-        document.body.removeChild(navLinks);
+      document.body.appendChild(sheet);
+      mobileBtn.setAttribute('aria-expanded', 'true');
+      sheet.querySelector('.close-sheet')?.addEventListener('click', () => {
+        sheet.remove();
+        mobileBtn.setAttribute('aria-expanded', 'false');
       });
-
-      navLinks.querySelectorAll('a').forEach(link => {
+      sheet.querySelectorAll('a').forEach((link) => {
         link.addEventListener('click', () => {
-          setTimeout(() => {
-            if (document.body.contains(navLinks)) document.body.removeChild(navLinks);
-          }, 300);
+          sheet.remove();
+          mobileBtn.setAttribute('aria-expanded', 'false');
         });
       });
     });

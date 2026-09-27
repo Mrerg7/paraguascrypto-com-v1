@@ -1,21 +1,44 @@
 ---
 import SEO from '../components/SEO.astro';
+import StickyAcquire from '../components/StickyAcquire.astro';
 import '../styles/global.css';
 
 interface Props {
   title?: string;
   description?: string;
+  lang?: 'en' | 'es';
+  robots?: string;
+  jsonLd?: unknown;
+  preloadHero?: boolean;
+  showSticky?: boolean;
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  lang = 'en',
+  robots,
+  jsonLd,
+  preloadHero = false,
+  showSticky = true,
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang === 'es' ? 'es' : 'en'}>
   <head>
-    <SEO title={title} description={description} path={Astro.url.pathname} />
+    <SEO
+      title={title}
+      description={description}
+      path={Astro.url.pathname}
+      lang={lang}
+      robots={robots}
+      jsonLd={jsonLd}
+      preloadHero={preloadHero}
+    />
   </head>
-  <body class="overflow-x-hidden">
+  <body class="overflow-x-hidden pb-[4.75rem] md:pb-0">
     <slot />
+    {showSticky && <StickyAcquire lang={lang} />}
   </body>
 </html>

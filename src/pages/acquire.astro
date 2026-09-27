@@ -1,0 +1,80 @@
+---
+import { getEntry } from 'astro:content';
+import Footer from '../components/Footer.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+import Nav from '../components/Nav.astro';
+import { SITE } from '../consts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  breadcrumbNode,
+  graph,
+  organizationNode,
+  productNode,
+  webPageNode,
+  websiteNode,
+} from '../lib/schema';
+
+const siteEntry = await getEntry('site', 'default');
+if (!siteEntry) throw new Error('Site config missing');
+
+const title = `Acquire paraguascrypto.com — ${SITE.askingPriceLabel} asking price`;
+const description =
+  'Buy paraguascrypto.com. Asking price $27,500 USD. Send an offer to sales@desertrich.com. Transfer by Escrow.com after terms are accepted. The sale is the domain only.';
+
+const jsonLd = graph([
+  websiteNode(),
+  organizationNode(),
+  productNode(),
+  webPageNode({ path: '/acquire/', title, description, lang: 'en-US' }),
+  breadcrumbNode([
+    { name: 'Home', path: '/' },
+    { name: 'Acquire', path: '/acquire/' },
+  ]),
+]);
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <Nav />
+  <main class="mx-auto max-w-screen-xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28">
+    <nav class="mb-6 text-sm text-zinc-500" aria-label="Breadcrumb">
+      <a href="/" class="no-underline hover:text-white">Home</a>
+      <span class="px-2">/</span>
+      <span class="text-zinc-300">Acquire</span>
+    </nav>
+
+    <div class="grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[2px] text-indigo-400">Domain for sale</p>
+        <h1 class="section-header mt-3">Acquire <span class="indigo-gradient">paraguascrypto.com</span></h1>
+        <p class="mt-4 text-lg text-zinc-400">
+          Crypto Umbrella. One-time purchase. Full ownership of the .com after escrow clears. This page is the offer — not a product demo.
+        </p>
+
+        <div class="mt-8 rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+          <div class="text-xs uppercase tracking-[2px] text-zinc-500">Asking price</div>
+          <div class="mt-1 font-display text-5xl font-extrabold tracking-tight text-white">{SITE.askingPriceLabel}</div>
+          <div class="mt-1 text-sm text-zinc-400">USD · one-time · domain only</div>
+          <ul class="mt-5 space-y-2 text-sm text-zinc-300">
+            <li>Escrow.com or a mutually accepted escrow desk</li>
+            <li>Registrar push plus DNS control</li>
+            <li>Offers under ask are read if they are specific</li>
+            <li>No customer list, code, or trademark warranty included</li>
+          </ul>
+        </div>
+
+        <p class="mt-6 text-sm leading-relaxed text-zinc-500">
+          Direct email also works:
+          <a class="text-indigo-300 no-underline" href={`mailto:${SITE.acquisitionEmail}`}>{SITE.acquisitionEmail}</a>.
+          Run your own trademark search before you wire anything. See the <a class="text-indigo-300" href="/faq/">FAQ</a> and <a class="text-indigo-300" href="/brand/">brand notes</a>.
+        </p>
+      </div>
+
+      <div id="inquire" class="rounded-3xl border border-zinc-700 bg-zinc-950 p-5 sm:p-8">
+        <h2 class="text-2xl font-semibold tracking-tight">Send your inquiry</h2>
+        <p class="mb-6 mt-2 text-sm text-zinc-400">Serious buyers only. Include an offer if you have a number.</p>
+        <InquiryForm id="acquire-form" />
+      </div>
+    </div>
+  </main>
+  <Footer disclaimer={siteEntry.data.disclaimer} />
+</BaseLayout>
